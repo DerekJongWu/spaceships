@@ -62,3 +62,7 @@ class Net(nn.Module):
     def forward(self, x):
         x = self.convnet(x)
         return self.localizer(x)
+
+    def predict(self, x): 
+        with torch.no_grad(): 
+            pred = self.forward(x)
