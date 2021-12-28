@@ -14,8 +14,8 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion):
     for _ in range(0, steps):
         images, target = make_batch(batch_size)
 
-        #images = images.to(device)
-        #target = target.to(device)
+        images = images.to(device)
+        target = target.to(device)
 
         output = model(images)
 
