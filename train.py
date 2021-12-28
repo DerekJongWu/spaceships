@@ -47,13 +47,15 @@ def main():
     criterion = modulated_loss
 
     epochs = 10
-    steps_per_epoch = 1000
+    steps_per_epoch = 2000
     batch_size = 64
 
     for epoch in range(0, epochs):
         adjust_learning_rate(optimizer, epoch)
         train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion)
 
+    path = F'model.pth.tar'
+    torch.save(model.state_dict(), path)
 
 
 if __name__ == "__main__":
