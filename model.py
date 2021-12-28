@@ -66,3 +66,9 @@ class Net(nn.Module):
     def predict(self, x): 
         with torch.no_grad(): 
             pred = self.forward(x)
+
+            if pred is None: 
+                return np.full(5, np.nan)
+            
+            else: 
+                return pred

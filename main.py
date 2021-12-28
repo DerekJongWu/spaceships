@@ -25,8 +25,8 @@ def eval():
         img = torch.unsqueeze(img, 0)
         img = img.to(device)
 
-        pred = model(img)
-        print(pred)
+        pred = model.predict(img)
+        
         ious.append(score_iou(label, pred))
 
     ious = np.asarray(ious, dtype="float")
