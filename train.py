@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 
-from helpers import make_batch, adjust_learning_rate
+from helpers import make_batch
 from model import Net
 from loss import modulated_loss
 
@@ -42,7 +42,7 @@ def main():
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    optimizer = optim.Adam(model.parameters(), eps=1e-07)
+    optimizer = optim.Adam(model.parameters(),lr = 0.001, eps=1e-07)
 
     criterion = modulated_loss
 
@@ -51,7 +51,6 @@ def main():
     batch_size = 64
 
     for epoch in range(0, epochs):
-        adjust_learning_rate(optimizer, epoch)
         train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion)
 
     path = F'model.pth.tar'
