@@ -26,7 +26,7 @@ def eval():
         img = img.to(device)
 
         pred = model.predict(img)
-        
+        print(pred.shape)
         ious.append(score_iou(label, pred))
 
     ious = np.asarray(ious, dtype="float")
