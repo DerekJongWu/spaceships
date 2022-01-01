@@ -72,7 +72,7 @@ class Net(nn.Module):
         with torch.no_grad(): 
             pred = self.forward(x)
             pred = np.squeeze(pred)
-            
+            print(pred.shape)
             if pred[0] == 0:  
                 return np.full(5, np.nan)
             else: 
