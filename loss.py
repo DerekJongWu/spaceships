@@ -30,7 +30,7 @@ def modulated_loss(pred: Tensor, target: Tensor) -> Tensor:
 
     return loss, l_ship, l_bbox
 
-    
+
 def lmr5p(pred: Tensor, target: Tensor) -> Tensor:
     """5 parameter modulated rotation loss
     Arguments:
@@ -58,10 +58,7 @@ def lmr5p(pred: Tensor, target: Tensor) -> Tensor:
 
     lmr5p_ = torch.min(
         lcp + torch.abs(w1 - w2) + torch.abs(h1 - h2) + torch.abs(yaw1 - yaw2),
-        lcp
-        + torch.abs(w1 - h2)
-        + torch.abs(h1 - w2)
-        + torch.abs(90 - torch.abs(yaw1 - yaw2)),
+        lcp + torch.abs(w1 - h2) + torch.abs(h1 - w2) + torch.abs(90 - torch.abs(yaw1 - yaw2)),
     )
 
     return lmr5p_

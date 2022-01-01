@@ -26,12 +26,11 @@ class Localizer(nn.Module):
     def __init__(self):
         super(Localizer, self).__init__()
         self.FC = nn.Sequential(nn.Linear(16 * 12 * 12, 256), nn.ReLU(), nn.Linear(256, 5))
-        self.Sig = nn.Sigmoid()
 
     def forward(self, x):
         B, C, H, W = x.shape
         x = x.view(B, C * H * W)
-        return self.Sig(self.FC(x))
+        return self.FC(x)
 
 
 class Classifier(nn.Module):
@@ -43,12 +42,11 @@ class Classifier(nn.Module):
         self.bn = nn.BatchNorm1d(100)
         self.drop = nn.Dropout(0.3)
         self.relu = nn.ReLU()
-        self.sig = nn.Sigmoid()
 
     def forward(self, x):
         B, C, H, W = x.shape
         x = x.view(B, C * H * W)
-        return self.sig(self.fc2(self.drop(self.relu(self.bn(self.fc1(x))))))
+        return self.fc2(self.drop(self.relu(self.bn(self.fc1(x)))))
 
 
 class Net(nn.Module):
