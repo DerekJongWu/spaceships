@@ -26,8 +26,7 @@ def eval():
         img = img.to(device)
 
         pred = model.predict(img)
-        print(pred.shape)
-        ious.append(score_iou(label, pred))
+        ious.append(score_iou(label[1:6], pred))
 
     ious = np.asarray(ious, dtype="float")
     ious = ious[~np.isnan(ious)]  # remove true negatives
