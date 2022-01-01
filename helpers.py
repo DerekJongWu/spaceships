@@ -95,12 +95,15 @@ def make_data(
 
     img = np.zeros(shape=(image_size, image_size))
     label = np.full(5, np.nan)
+    label = np.insert(label, 0, 0)
 
     # draw ship
     if has_spaceship:
 
         params = (_get_pos(image_size), _get_yaw(), _get_size(), _get_l2w(), _get_t2l())
         pts, label = _make_spaceship(*params)
+        label = np.insert(label, 0, 1)
+
 
         rr, cc = polygon_perimeter(pts[:, 0], pts[:, 1])
         valid = (rr >= 0) & (rr < image_size) & (cc >= 0) & (cc < image_size)
@@ -123,7 +126,7 @@ def make_data(
     
 def make_batch(batch_size):
     # this model can only train on data where a spaceship is guaranteed, this is not true when testing
-    imgs, labels = zip(*[make_data(has_spaceship=True) for _ in range(batch_size)])
+    imgs, labels = zip(*[make_data() for _ in range(batch_size)])
     imgs = np.stack(imgs)
     labels = np.stack(labels)
 

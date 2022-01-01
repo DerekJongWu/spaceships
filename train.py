@@ -9,7 +9,8 @@ from loss import modulated_loss
 def train(model, optimizer, epoch, device, steps, batch_size, criterion):
     model.train()
     running_loss = 0.0
-    running_iou = 0.0
+    running_class_loss = 0.0
+    running_iou_loss = 0.0
 
     for _ in range(0, steps):
         images, target = make_batch(batch_size)
@@ -19,20 +20,19 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion):
 
         output = model(images)
 
-        iou = criterion(output, target)
-        
-        iou = torch.mean(iou)
-        running_iou += iou.item()
-
-        optimizer.zero_grad()
-        iou.backward()
+        loss, l_ship, l_bbox = criterion(output, target)
+        loss = loss.mean()
+        loss.backward()
         optimizer.step()
 
-        running_loss += iou.item()
+        running_loss += loss.item()
+        running_class_loss += torch.mean(l_ship)
+        running_iou_loss += torch.mean(l_bbox)
 
     print(epoch)
-    print(running_loss / steps)
-    print(running_iou / steps)
+    print(f'Loss: {running_loss / steps}')
+    print(f'Class Loss: {running_class_loss / steps}')
+    print(f'IOU loss: {running_iou_loss/steps}')
 
 def main():
     model = Net()
@@ -42,12 +42,12 @@ def main():
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    optimizer = optim.Adam(model.parameters(),lr = 0.001, eps=1e-07)
+    optimizer = optim.Adam(model.parameters(),lr = 0.001)
 
     criterion = modulated_loss
 
-    epochs = 30
-    steps_per_epoch = 3000
+    epochs = 10
+    steps_per_epoch = 1000
     batch_size = 64
 
     for epoch in range(0, epochs):

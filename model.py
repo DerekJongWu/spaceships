@@ -33,7 +33,7 @@ class Localizer(nn.Module):
         x = x.view(B, C * H * W)
         return self.Sig(self.FC(x))
 
-"""
+
 class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
@@ -49,7 +49,7 @@ class Classifier(nn.Module):
         B, C, H, W = x.shape
         x = x.view(B, C * H * W)
         return self.sig(self.fc2(self.drop(self.relu(self.bn(self.fc1(x))))))
-"""
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -58,16 +58,24 @@ class Net(nn.Module):
 
         self.convnet = ConvNet()
         self.localizer = Localizer()
+        self.classifier = Classifier()
 
     def forward(self, x):
         x = self.convnet(x)
-        return self.localizer(x)
+        classification = self.classifier(x)
+        localization = self.localizer(x)
+
+        p_ship = classification.view(x.shape[0],1)
+        bbox = localization.view(x.shape[0], 5)
+        
+        return torch.cat((p_ship, bbox), dim = 1) 
 
     def predict(self, x): 
         with torch.no_grad(): 
             pred = self.forward(x)
+            pred = np.squeeze(pred)
             
-            if pred is None: 
+            if pred[0] == 0:  
                 return np.full(5, np.nan)
             else: 
-                return np.squeeze(pred).cpu().numpy()
+                return pred[1:6].cpu().numpy()

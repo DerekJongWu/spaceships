@@ -17,6 +17,33 @@ def modulated_loss(pred: Tensor, target: Tensor) -> Tensor:
         loss for each pred, target pair without sum
     Reference: Eqn(2) https://arxiv.org/pdf/1911.08299.pdf
     """
+    assert pred.shape[-1] == 6
+    assert target.shape[-1] == 6
+    idx_no_ship = torch.nonzero(target[:, 0] == 0, as_tuple=True)
+    l_bbox = lmr5p(pred[:, 1:], target[:, 1:])
+    l_bbox[idx_no_ship] = 0
+    l_ship = torch.nn.functional.binary_cross_entropy_with_logits(
+        pred[:, 0], target[:, 0], reduction="none"
+    )
+
+    loss = l_ship + l_bbox
+
+    return loss, l_ship, l_bbox
+
+    
+def lmr5p(pred: Tensor, target: Tensor) -> Tensor:
+    """5 parameter modulated rotation loss
+    Arguments:
+        pred {Tensor Batch} -- x, y, yaw, w, h
+        target {Tensor Batch} -- x, y, yaw, w, h
+        * X and Y position (centre of the bounding box)
+        * Yaw (direction of heading)
+        * Width (size tangential to the direction of yaw)
+        * Height (size along the direct of yaw)
+    Returns:
+        loss for each pred, target pair without sum
+    Reference: Eqn(2) https://arxiv.org/pdf/1911.08299.pdf
+    """
     assert pred.shape[-1] == 5
     assert target.shape[-1] == 5
 
