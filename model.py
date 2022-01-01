@@ -74,6 +74,8 @@ class Net(nn.Module):
             pred = np.squeeze(pred)
             print(pred.shape)
             if pred[0] == 0:  
+                print(1)
                 return np.full(5, np.nan)
             else: 
+                print(pred[1:6].shape)
                 return pred[1:6].cpu().numpy()
