@@ -146,15 +146,7 @@ def make_batch_classification(batch_size):
     imgs = torch.unsqueeze(imgs, 1)
     return imgs, labels
 
-def adjust_learning_rate(optimizer, epoch):
-    """Sets the learning rate"""
-    lr = 0.001
-    if 20 < epoch <= 30:
-        lr = 0.0001
-    elif 30 < epoch :
-        lr = 0.00001
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+
 
 def score_iou(ypred: np.ndarray, ytrue: np.ndarray) -> Optional[float]:
 

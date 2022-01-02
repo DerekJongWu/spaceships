@@ -25,15 +25,17 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion, classif
 
         loss, l_ship, l_bbox = criterion(output, target)
         loss, l_ship, l_bbox = torch.mean(loss), torch.mean(l_ship), torch.mean(l_bbox)
+        
         if classify: 
             l_ship.backward()
         else: 
             l_bbox.backward() 
+
         optimizer.step()
 
-        running_loss += loss.item()
-        running_class_loss += torch.mean(l_ship)
-        running_iou_loss += torch.mean(l_bbox)
+        running_loss += loss
+        running_class_loss += l_ship
+        running_iou_loss += l_bbox
 
     print(epoch)
     print(f'Loss: {running_loss / steps}')
