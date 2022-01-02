@@ -25,29 +25,26 @@ class ConvNet(nn.Module):
 class Localizer(nn.Module):
     def __init__(self):
         super(Localizer, self).__init__()
-        self.FC = nn.Sequential(nn.Linear(16 * 12 * 12, 256), nn.ReLU(), nn.Linear(256, 5))
+        self.fc1 =  nn.Linear(16, 5)
+        self.flat = nn.Flatten()
+        self.an = nn.AdaptiveAvgPool2d((1,1))
 
     def forward(self, x):
-        B, C, H, W = x.shape
-        x = x.view(B, C * H * W)
-        return self.FC(x)
+        return self.fc1(self.flat(self.an(x)))
 
 
 class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
-        self.fc1 = nn.Linear(16 * 12 * 12, 100)
-        self.fc2 = nn.Linear(100, 1)
+        self.flat = nn.Flatten()
+        self.fc1 = nn.Linear(16, 1)
 
-        self.bn = nn.BatchNorm1d(100)
-        self.drop = nn.Dropout(0.3)
-        self.relu = nn.ReLU()
+        self.an = nn.AdaptiveAvgPool2d((1,1))
         self.sig = nn.Sigmoid() 
 
     def forward(self, x):
-        B, C, H, W = x.shape
-        x = x.view(B, C * H * W)
-        return self.sig(self.fc2(self.drop(self.relu(self.bn(self.fc1(x))))))
+        return self.sig(self.fc1(self.flat(self.an(x))))
+        
 
 
 class Net(nn.Module):
@@ -63,11 +60,8 @@ class Net(nn.Module):
         x = self.convnet(x)
         classification = self.classifier(x)
         localization = self.localizer(x)
-
-        p_ship = classification.view(x.shape[0],1)
-        bbox = localization.view(x.shape[0], 5)
         
-        return torch.cat((p_ship, bbox), dim = 1) 
+        return torch.cat((classification, localization), dim = 1) 
 
     def predict(self, x): 
         with torch.no_grad(): 

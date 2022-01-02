@@ -25,7 +25,7 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion, classif
 
         loss, l_ship, l_bbox = criterion(output, target)
         loss, l_ship, l_bbox = torch.mean(loss), torch.mean(l_ship), torch.mean(l_bbox)
-        
+
         if classify: 
             l_ship.backward()
         else: 
@@ -54,8 +54,8 @@ def main():
 
     criterion = modulated_loss
 
-    epochs = 10
-    steps_per_epoch = 1000
+    epochs = 1
+    steps_per_epoch = 5
     batch_size = 64
 
     for epoch in range(0, epochs):
@@ -71,8 +71,8 @@ def main():
         param.requires_grad = False
 
     batch_size = 64
-    steps_per_epoch = 300
-    epochs = 5
+    steps_per_epoch = 5
+    epochs = 1
 
     optimizer = optim.Adam(model.parameters(), eps=1e-07)
 
