@@ -126,6 +126,17 @@ def make_data(
     
 def make_batch(batch_size):
     # this model can only train on data where a spaceship is guaranteed, this is not true when testing
+    imgs, labels = zip(*[make_data(has_spaceship = True) for _ in range(batch_size)])
+    imgs = np.stack(imgs)
+    labels = np.stack(labels)
+
+    imgs = torch.from_numpy(np.asarray(imgs, dtype=np.float32))
+    labels = torch.from_numpy(np.asarray(labels, dtype=np.float32))
+    imgs = torch.unsqueeze(imgs, 1)
+    return imgs, labels
+
+def make_batch_classification(batch_size):
+    # this model can only train on data where a spaceship is guaranteed, this is not true when testing
     imgs, labels = zip(*[make_data() for _ in range(batch_size)])
     imgs = np.stack(imgs)
     labels = np.stack(labels)
