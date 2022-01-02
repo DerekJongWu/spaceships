@@ -25,7 +25,7 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion, classif
         if classify: 
             l_ship.backward()
         else: 
-            l_bbox.backwarrd() 
+            l_bbox.backward() 
         optimizer.step()
 
         running_loss += loss.item()

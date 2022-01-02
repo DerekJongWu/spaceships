@@ -42,11 +42,12 @@ class Classifier(nn.Module):
         self.bn = nn.BatchNorm1d(100)
         self.drop = nn.Dropout(0.3)
         self.relu = nn.ReLU()
+        self.sig = nn.Sigmoid() 
 
     def forward(self, x):
         B, C, H, W = x.shape
         x = x.view(B, C * H * W)
-        return self.fc2(self.drop(self.relu(self.bn(self.fc1(x)))))
+        return self.sig(self.fc2(self.drop(self.relu(self.bn(self.fc1(x))))))
 
 
 class Net(nn.Module):

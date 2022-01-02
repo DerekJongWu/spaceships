@@ -22,8 +22,8 @@ def modulated_loss(pred: Tensor, target: Tensor) -> Tensor:
     idx_no_ship = torch.nonzero(target[:, 0] == 0, as_tuple=True)
     l_bbox = lmr5p(pred[:, 1:], target[:, 1:])
     l_bbox[idx_no_ship] = 0
-    l_ship = torch.nn.functional.binary_cross_entropy_with_logits(
-        pred[:, 0], target[:, 0], reduction="none"
+    l_ship = torch.nn.BCELoss()(
+        pred[:, 0], target[:, 0]
     )
 
     loss = l_ship + l_bbox
