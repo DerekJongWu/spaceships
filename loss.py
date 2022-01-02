@@ -22,7 +22,7 @@ def modulated_loss(pred: Tensor, target: Tensor) -> Tensor:
     idx_no_ship = torch.nonzero(target[:, 0] == 0, as_tuple=True)
     l_bbox = lmr5p(pred[:, 1:], target[:, 1:])
     l_bbox[idx_no_ship] = 0
-    l_ship = torch.nn.BCELoss()(
+    l_ship = torch.nn.BCELoss(
         pred[:, 0], target[:, 0]
     )
 
