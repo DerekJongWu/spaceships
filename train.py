@@ -6,7 +6,7 @@ from helpers import make_batch
 from model import Net
 from loss import modulated_loss
 
-def train(model, optimizer, epoch, device, steps, batch_size, criterion):
+def train(model, optimizer, epoch, device, steps, batch_size, criterion, classify):
     model.train()
     running_loss = 0.0
     running_class_loss = 0.0
@@ -21,8 +21,11 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion):
         output = model(images)
 
         loss, l_ship, l_bbox = criterion(output, target)
-        loss = loss.mean()
-        loss.backward()
+        loss, l_ship, l_bbox = torch.mean(loss), torch.mean(l_ship), torch.mean(l_bbox)
+        if classify: 
+            l_ship.backward()
+        else: 
+            l_bbox.backwarrd() 
         optimizer.step()
 
         running_loss += loss.item()
@@ -38,7 +41,7 @@ def main():
     model = Net()
 
     # Part I - Train model to localize spaceship on images containing spaceship
-    print("Start localization training")
+    print("Start classification training")
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -46,12 +49,31 @@ def main():
 
     criterion = modulated_loss
 
-    epochs = 10
-    steps_per_epoch = 1000
+    epochs = 5
+    steps_per_epoch = 500
     batch_size = 64
 
     for epoch in range(0, epochs):
-        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion)
+        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classify = True)
+
+
+    print("Start localization training") 
+
+    for param in model.convnet.parameters():
+        param.requires_grad = False
+
+    for param in model.classifier.parameters():
+        param.requires_grad = False
+
+    batch_size = 64
+    steps_per_epoch = 3000
+    epochs = 40
+
+    optimizer = optim.Adam(model.parameters(), eps=1e-07)
+
+    for epoch in range(0, epochs):
+        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classify = False)
+
 
     path = F'model.pth.tar'
     torch.save(model.state_dict(), path)

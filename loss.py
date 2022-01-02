@@ -47,8 +47,8 @@ def lmr5p(pred: Tensor, target: Tensor) -> Tensor:
     assert pred.shape[-1] == 5
     assert target.shape[-1] == 5
 
-    x1, x2 = pred[:, 0], target[:, 0]
-    y1, y2 = pred[:, 1], target[:, 1]
+    y1, y2 = pred[:, 0], target[:, 0]
+    x1, x2 = pred[:, 1], target[:, 1]
     yaw1, yaw2 = pred[:, 2], target[:, 2]
     w1, w2 = pred[:, 3], target[:, 3]
     h1, h2 = pred[:, 4], target[:, 4]
