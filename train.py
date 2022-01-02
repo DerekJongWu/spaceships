@@ -54,8 +54,8 @@ def main():
 
     criterion = modulated_loss
 
-    epochs = 1
-    steps_per_epoch = 5
+    epochs = 10
+    steps_per_epoch = 500
     batch_size = 64
 
     for epoch in range(0, epochs):
@@ -71,8 +71,8 @@ def main():
         param.requires_grad = False
 
     batch_size = 64
-    steps_per_epoch = 5
-    epochs = 1
+    steps_per_epoch = 3000
+    epochs = 10
 
     optimizer = optim.Adam(model.parameters(), eps=1e-07)
 
