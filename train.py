@@ -54,7 +54,7 @@ def main():
 
     criterion = modulated_loss
 
-    epochs = 10
+    epochs = 30
     steps_per_epoch = 3000
     batch_size = 64
 
