@@ -4,16 +4,16 @@ import torch.optim as optim
 
 from helpers import make_batch, make_batch_classification
 from model import Net
-from loss import modulated_loss
+from loss import model_loss
 
-def train(model, optimizer, epoch, device, steps, batch_size, criterion, classify):
+def train(model, optimizer, epoch, device, steps, batch_size, criterion, classification):
     model.train()
     running_loss = 0.0
     running_class_loss = 0.0
     running_iou_loss = 0.0
 
     for _ in range(0, steps):
-        if classify: 
+        if classification: 
             images, target = make_batch_classification(batch_size)
         else: 
             images, target = make_batch(batch_size)
@@ -26,7 +26,7 @@ def train(model, optimizer, epoch, device, steps, batch_size, criterion, classif
         loss, l_ship, l_bbox = criterion(output, target)
         loss, l_ship, l_bbox = torch.mean(loss), torch.mean(l_ship), torch.mean(l_bbox)
 
-        if classify: 
+        if classification: 
             l_ship.backward()
         else: 
             l_bbox.backward() 
@@ -52,10 +52,10 @@ def main():
     model.to(device)
     optimizer = optim.Adam(model.parameters(),lr = 0.001)
 
-    criterion = modulated_loss
+    criterion = model_loss
 
-    epochs = 30
-    steps_per_epoch = 3000
+    epochs = 40
+    steps_per_epoch = 4000
     batch_size = 64
 
     for epoch in range(0, epochs):
@@ -70,7 +70,6 @@ def main():
     for param in model.localizer.parameters():
         param.requires_grad = False
 
-    batch_size = 64
     steps_per_epoch = 500
     epochs = 10
 

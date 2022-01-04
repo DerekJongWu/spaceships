@@ -50,8 +50,6 @@ class Classifier(nn.Module):
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        # input images 1 * 200 * 200
-
         self.convnet = ConvNet()
         self.localizer = Localizer()
         self.classifier = Classifier()

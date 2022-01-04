@@ -4,7 +4,7 @@ import torch
 from torch import Tensor
 
 
-def modulated_loss(pred: Tensor, target: Tensor) -> Tensor:
+def model_loss(pred: Tensor, target: Tensor) -> Tensor:
     """5 parameter modulated rotation loss
     Arguments:
         pred {Tensor Batch} -- x, y, yaw, w, h
