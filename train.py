@@ -59,7 +59,7 @@ def main():
     batch_size = 64
 
     for epoch in range(0, epochs):
-        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classify = False)
+        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classification = False)
 
 
     print("Start classification training") 
@@ -76,7 +76,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), eps=1e-07)
 
     for epoch in range(0, epochs):
-        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classify = True)
+        train(model, optimizer, epoch, device, steps_per_epoch, batch_size, criterion, classification = True)
 
 
     path = F'model.pth.tar'
