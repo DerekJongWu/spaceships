@@ -55,7 +55,7 @@ def main():
     criterion = model_loss
 
     epochs = 40
-    steps_per_epoch = 4000
+    steps_per_epoch = 3000
     batch_size = 64
 
     for epoch in range(0, epochs):
